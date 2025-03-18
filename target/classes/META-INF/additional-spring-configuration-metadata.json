@@ -1,0 +1,23 @@
+{"properties": [
+  {
+    "name": "spring.web.resources.add-mappings",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.web.resources.add-mappings'"
+  },
+  {
+    "name": "-",
+    "type": "java.lang.String",
+    "description": "A description for '-'"
+  },
+  {"description": "A description for 'spring.web.resources.add-mappings'"},
+  {
+    "name": "static-locations",
+    "type": "java.lang.String",
+    "description": "A description for 'static-locations'"
+  },
+  {
+    "name": "spring.web.resources.add-mappings",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.web.resources.add-mappings'"
+  }
+]}
