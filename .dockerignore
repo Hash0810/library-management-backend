@@ -1,0 +1,6 @@
+target/
+*.md
+*.log
+*.git
+*.DS_Store
+node_modules/
