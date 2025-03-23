@@ -1,6 +1,5 @@
-# Use an official OpenJDK image as the base image
-FROM maven:3.8.5-openjdk-18 AS build
-
+# Use an official Eclipse Temurin (OpenJDK) image as the base image
+FROM eclipse-temurin:18-jdk AS build
 
 # Set the working directory in the container
 WORKDIR /app
