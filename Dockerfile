@@ -17,7 +17,14 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Copy the packaged JAR file into the container
-COPY target/*.jar app.jar
+# Use a lightweight base image for the final stage
+FROM eclipse-temurin:18-jre
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the packaged JAR file from the build stage
+COPY --from=build /app/target/Lib_Man-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose port 8080
 EXPOSE 8080
