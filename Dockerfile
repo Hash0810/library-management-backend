@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Build the application (ensure Maven is installed in your project)
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # Copy the packaged JAR file into the container
 COPY target/*.jar app.jar
