@@ -17,7 +17,7 @@ public class AIService {
     @Value("${spring.ai.openai.api-key}")
     private String apiKey;
 
-    @Value("${openai.api.model}")
+    @Value("${spring.ai.openai.model}")
     private String modelVersion;
 
     private final RestTemplate restTemplate;
