@@ -9,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**") // Adjust the path as needed
-                .allowedOrigins("http://localhost:3000","https://library-management-frontend-pjuoym8bt-hash0810s-projects.vercel.app") // Your frontend URL
+                .allowedOrigins("http://localhost:3000","https://library-management-frontend-phi.vercel.app") // Your frontend URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }
