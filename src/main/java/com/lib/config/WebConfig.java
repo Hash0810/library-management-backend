@@ -2,18 +2,18 @@ package com.lib.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+// In your WebConfig.java
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // Adjust the path as needed
-                .allowedOrigins("https://library-management-system-fe-phi.vercel.app") // Your frontend URL
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        registry.addMapping("/**")
+                .allowedOrigins(
+                    "https://library-management-system-fe-phi.vercel.app",
+                    "http://localhost:3000" // for local development
+                )
+                .allowedMethods("*")
                 .allowedHeaders("*")
-                .exposedHeaders("Authorization")  // If using custom headers
-                .allowCredentials(true)
-                .maxAge(3600);;
+                .allowCredentials(true);
     }
 }
