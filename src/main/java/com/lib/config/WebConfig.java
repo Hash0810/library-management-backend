@@ -8,10 +8,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**") // Adjust the path as needed
+        registry.addMapping("/**") // Adjust the path as needed
                 .allowedOrigins("https://library-management-system-fe-phi.vercel.app") // Your frontend URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .exposedHeaders("Authorization")  // If using custom headers
+                .allowCredentials(true)
+                .maxAge(3600);;
     }
 }
