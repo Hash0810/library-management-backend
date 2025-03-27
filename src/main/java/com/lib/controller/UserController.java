@@ -43,8 +43,9 @@ public class UserController {
     private FineService fineService;
 
     // Register a new user and send OTP for verification
-    @GetMapping("/profile")
-    public ResponseEntity<User> getUserProfile(@RequestParam String username) {
+    @PostMapping("/profile")
+    public ResponseEntity<User> getUserProfile(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
         User user = userService.findByUsername(username);
         return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
