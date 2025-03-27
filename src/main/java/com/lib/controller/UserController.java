@@ -140,16 +140,21 @@ public class UserController {
     }
 
     @PostMapping("/books/borrow")
-    public ResponseEntity<String> borrowBook(@RequestParam String username, @RequestParam Integer bookId) {
+    public ResponseEntity<String> borrowBook(@RequestBody Map<String, Object> request) {
+        String username = (String) request.get("username");
+        Integer bookId = (Integer) request.get("bookId");
         String responseMessage = bookService.borrowBook(bookId, username);
         return ResponseEntity.ok(responseMessage);
     }
-
+    
     @PostMapping("/books/return")
-    public ResponseEntity<String> returnBook(@RequestParam String username, @RequestParam Integer bookId) {
+    public ResponseEntity<String> returnBook(@RequestBody Map<String, Object> request) {
+        String username = (String) request.get("username");
+        Integer bookId = (Integer) request.get("bookId");
         String responseMessage = bookService.returnBook(username, bookId);
         return ResponseEntity.ok(responseMessage);
     }
+
 
     @GetMapping("/get-user-details")
     public ResponseEntity<User> getUserDetails(@RequestParam String email) {
