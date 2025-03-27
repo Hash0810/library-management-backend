@@ -67,10 +67,13 @@ public class UserController {
 
     // Verify OTP for registration
     @PostMapping("/verify-signup-otp")
-    public ResponseEntity<String> verifySignupOtp(@RequestParam String email, @RequestParam String otp) {
+    public ResponseEntity<String> verifySignupOtp(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String otp = request.get("otp");
         String responseMessage = userService.verifyRegistrationOtp(email, otp);
         return ResponseEntity.ok(responseMessage);
     }
+
 
     @PostMapping("/verify-admin-signup-otp")
     public ResponseEntity<String> verifyAdminSignupOtp(@RequestParam String email, @RequestParam String otp) {
@@ -88,13 +91,12 @@ public class UserController {
 
     // Verify OTP for login
     @PostMapping("/verify-login-otp")
-    public ResponseEntity<String> verifyLoginOtp(@RequestParam String email, @RequestParam String otp) {
+    public ResponseEntity<String> verifyLoginOtp(@RequestBody Map<String, String> request) {
         try {
-            // Retrieve email associated with the username
-
-            // Verify the OTP (assuming you have an OTPService for validation)
+            String email = request.get("email");
+            String otp = request.get("otp");
+    
             boolean isOtpValid = userService.verifyLoginOtp(email, otp);
-
             if (isOtpValid) {
                 return ResponseEntity.ok("Login OTP verification successful");
             } else {
@@ -104,6 +106,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during OTP verification");
         }
     }
+
 
     // Initiate password reset process and send OTP
     @PostMapping("/reset-password-initiate")
