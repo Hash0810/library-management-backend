@@ -177,15 +177,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
-    @GetMapping("/book-history")
-    public ResponseEntity<List<BookTransaction>> getBorrowingHistory(@RequestParam String username) {
+    @PostMapping("/book-history")
+    public ResponseEntity<List<BookTransaction>> getBorrowingHistory(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
         List<BookTransaction> history = bookService.getBorrowedBooksByUsername(username);
-        
         return ResponseEntity.ok(history != null ? history : new ArrayList<>());
     }
 
-    @GetMapping("/fine-history")
-    public ResponseEntity<List<FineHistory>> getFineHistory(@RequestParam String username) {
+    @PostMapping("/fine-history")
+    public ResponseEntity<List<FineHistory>> getFineHistory(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
         List<FineHistory> fines = fineService.getFinesByUsername(username);
         return ResponseEntity.ok(fines != null ? fines : new ArrayList<>());
     }
