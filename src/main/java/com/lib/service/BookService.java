@@ -121,19 +121,18 @@ public class BookService {
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
-    public List<BookTransaction> getBorrowedBooksByUsername(String username) {
-    	 List<BookTransaction> transactions = bookTransactionRepository.findByUser_Username(username);
-    	 for(BookTransaction transaction:transactions)
-    	 {
-    		 if(transaction.getReturnDate()== null)
-    		 {
-    			 transaction.setStatus("Not Returned");
-    		 }
-    		 else
-    		 {
-    			 transaction.setStatus("Returned on "+ transaction.getReturnDate().toString());
-    		 }
-    	 }
-    	 return transactions;
+    public Page<BookTransaction> getBorrowedBooksByUsername(String username, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BookTransaction> transactions = bookTransactionRepository.findByUser_Username(username, pageable);
+
+        transactions.forEach(transaction -> {
+            if (transaction.getReturnDate() == null) {
+                transaction.setStatus("Not Returned");
+            } else {
+                transaction.setStatus("Returned on " + transaction.getReturnDate().toString());
+            }
+        });
+
+        return transactions;
     }
 }
