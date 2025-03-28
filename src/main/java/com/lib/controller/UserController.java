@@ -183,10 +183,13 @@ public class UserController {
     }
 
     @PostMapping("/book-history")
-    public ResponseEntity<List<BookTransaction>> getBorrowingHistory(@RequestBody Map<String, String> request) {
-        String username = request.get("username");
-        List<BookTransaction> history = bookService.getBorrowedBooksByUsername(username);
-        return ResponseEntity.ok(history != null ? history : new ArrayList<>());
+    public ResponseEntity<Page<BookTransaction>> getBorrowingHistory(@RequestBody Map<String, Object> request) {
+        String username = (String) request.get("username");
+        int page = (int) request.getOrDefault("page", 0);  // Default to page 0
+        int size = (int) request.getOrDefault("size", 10); // Default page size 10
+
+        Page<BookTransaction> history = bookService.getBorrowedBooksByUsername(username, page, size);
+        return ResponseEntity.ok(history);
     }
 
     @PostMapping("/fine-history")
