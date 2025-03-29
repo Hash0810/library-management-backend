@@ -17,7 +17,7 @@ public class Book {
 
     private boolean available;
     private String borrowedBy;  // Optional: Replace with @ManyToOne if using User entity
-
+    private int copies;
     @ManyToOne
     private Librarian addedBy;
 
@@ -79,7 +79,13 @@ public class Book {
     public String getBorrowedBy() {
         return borrowedBy;
     }
+    public int getCopies() {
+        return copies;
+    }
 
+    public void setCopies(int copies) {
+        this.copies = copies;
+    }
     public void setBorrowedBy(String borrowedBy) {
         this.borrowedBy = borrowedBy;
     }
