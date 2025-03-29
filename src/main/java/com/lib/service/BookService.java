@@ -82,6 +82,7 @@ public class BookService {
         }
 
         book.setAvailable(false);
+        book.setCopies(book.getCopies() - 1);
         book.setBorrowedBy(username);
         bookRepository.save(book);
 
@@ -110,6 +111,7 @@ public class BookService {
             .orElseThrow(() -> new RuntimeException("No active transaction found for this book and user."));
 
         // ✅ Update return date
+        book.setCopies(book.getCopies() + 1);
         transaction.setReturnDate(LocalDate.now());
         bookTransactionRepository.save(transaction);
 
