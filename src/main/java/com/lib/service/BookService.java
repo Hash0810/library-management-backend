@@ -73,27 +73,27 @@ public class BookService {
     @Transactional
     public String borrowBook(Integer bookId, String username) {
         Book book = findById(bookId);
-
-        if (!book.isAvailable()) {
-            throw new RuntimeException("Book with ID " + bookId + " is not available for borrowing.");
-        }
-
-        book.setAvailable(false);
-        book.setBorrowedBy(username);
-        bookRepository.save(book);
-
-        // ✅ Ensure user exists
-        User user = userService.findByUsername(username);
-        if (user == null) {
+        User student = userService.findByUsername(username);
+    
+        if (student == null) {
             throw new RuntimeException("User not found with username: " + username);
         }
-
-        // ✅ CREATE A NEW BOOK TRANSACTION
-        BookTransaction transaction = new BookTransaction(user, book, LocalDate.now(), null); // returnDate is null initially
-        bookTransactionRepository.save(transaction); // Save transaction
-
-        return "Book borrowed successfully.";
+    
+        if (book.getCopies() <= 0) {
+            return "Book is currently unavailable.";
+        }
+    
+        // Create a new book request for approval
+        BookRequest bookRequest = new BookRequest();
+        bookRequest.setBook(book);
+        bookRequest.setStudent(student);
+        bookRequest.setStatus(RequestStatus.PENDING); // Waiting for librarian approval
+    
+        bookRequestRepository.save(bookRequest);
+    
+        return "Book request submitted successfully. Awaiting librarian approval.";
     }
+
     @Transactional
     public String returnBook(String username, Integer bookId) {
         Book book = findById(bookId);
