@@ -1,6 +1,7 @@
 package com.lib.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
@@ -19,6 +20,7 @@ public class SpringOpenService {
 
     private final RestTemplate restTemplate;
 
+    @Autowired
     public SpringOpenService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
