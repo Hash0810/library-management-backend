@@ -19,8 +19,9 @@ public class Book {
     private String borrowedBy;  // Optional: Replace with @ManyToOne if using User entity
 
     @ManyToOne
-    private Librarian addedBy;
-
+    @JoinColumn(name = "added_by")  // Store User ID, since Librarians are Users
+    private User addedBy;
+    
     @CreationTimestamp
     private LocalDateTime createdAt;
 
