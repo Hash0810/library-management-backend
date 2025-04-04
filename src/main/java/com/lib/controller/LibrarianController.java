@@ -64,6 +64,22 @@ public class LibrarianController {
     	List<Book> books = bookService.getAllBooks();
         return ResponseEntity.ok(books != null ? books : new ArrayList<>());
     }
+    @PutMapping("/approveRequest")
+    public ResponseEntity<String> approveBookRequest(@RequestBody Map<String, Integer> requestBody) {
+        Integer requestId = requestBody.get("requestId");
+    
+        String responseMessage = bookService.approveBookRequest(requestId);
+        return ResponseEntity.ok(responseMessage);
+    }
+    
+    @PutMapping("/rejectRequest")
+    public ResponseEntity<String> rejectBookRequest(@RequestBody Map<String, Integer> requestBody) {
+        Integer requestId = requestBody.get("requestId");
+    
+        String responseMessage = bookService.rejectBookRequest(requestId);
+        return ResponseEntity.ok(responseMessage);
+    }
+
 
 }
 
