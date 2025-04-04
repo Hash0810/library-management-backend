@@ -27,6 +27,7 @@ public class Book {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    private int copies;
     // Getters and setters
     public int getId() {
         return id;
@@ -90,5 +91,11 @@ public class Book {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+    public void setCopies(int copies){
+        this.copies=copies;
+    }
+    public int getCopies(){
+        return copies;
     }
 }
