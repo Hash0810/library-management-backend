@@ -9,13 +9,14 @@ import com.lib.service.SpringOpenService;
 @RequestMapping("/api/ai")
 public class AIController {
 
-    @Autowired
+    
     private AIService aiService;
 
-    @Autowired
+    
     private final SpringOpenService springOpenService;
-
-    AIController(SpringOpenService springOpenService) {
+    
+    @Autowired
+    public AIController(SpringOpenService springOpenService) {
         this.springOpenService = springOpenService;
     }
     
