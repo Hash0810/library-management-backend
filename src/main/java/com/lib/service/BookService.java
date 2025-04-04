@@ -136,4 +136,44 @@ public class BookService {
     	 }
     	 return transactions;
     }
+    @Transactional
+    public String approveBookRequest(Integer requestId) {
+        BookRequest bookRequest = bookRequestRepository.findById(requestId)
+            .orElseThrow(() -> new RuntimeException("Book request not found with ID: " + requestId));
+    
+        Book book = bookRequest.getBook();
+        User student = bookRequest.getStudent();
+    
+        if (book.getCopies() <= 0) {
+            return "Book is unavailable.";
+        }
+    
+        // ✅ Approve request
+        bookRequest.setStatus(RequestStatus.APPROVED);
+        bookRequestRepository.save(bookRequest);
+    
+        // ✅ Update book availability
+        book.setCopies(book.getCopies() - 1);
+        if (book.getCopies() == 0) {
+            book.setAvailable(false);
+        }
+        bookRepository.save(book);
+    
+        // ✅ Create a transaction record
+        BookTransaction transaction = new BookTransaction(student, book, LocalDate.now(), null);
+        bookTransactionRepository.save(transaction);
+    
+        return "Book request approved. Book issued to " + student.getUsername();
+    }
+    @Transactional
+    public String rejectBookRequest(Integer requestId) {
+        BookRequest bookRequest = bookRequestRepository.findById(requestId)
+            .orElseThrow(() -> new RuntimeException("Book request not found with ID: " + requestId));
+    
+        // ✅ Reject request
+        bookRequest.setStatus(RequestStatus.REJECTED);
+        bookRequestRepository.save(bookRequest);
+    
+        return "Book request rejected.";
+    }
 }
