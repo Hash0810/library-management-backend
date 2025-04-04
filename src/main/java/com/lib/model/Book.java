@@ -70,11 +70,11 @@ public class Book {
         this.available = available;
     }
 
-    public Librarian getAddedBy() {
-        return addedBy;
+    public int getAddedById() {
+        return addedBy != null ? addedBy.getId() : 0;
     }
 
-    public void setAddedBy(Librarian addedBy) {
+    public void setAddedBy(User addedBy) {
         this.addedBy = addedBy;
     }
 
