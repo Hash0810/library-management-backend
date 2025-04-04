@@ -15,6 +15,9 @@ public class SpringOpenService {
     @Value("${spring.ai.openai.api-key}")
     private String apiKey;
 
+    @Value("${spring.ai.openai.model}")
+    private String model;
+    
     @Value("${openai.api.url}")
     private String apiUrl;
 
