@@ -136,10 +136,14 @@ public class UserController {
     }
 
     @PostMapping("/books/borrow")
-    public ResponseEntity<String> borrowBook(@RequestParam String username, @RequestParam Integer bookId) {
+    public ResponseEntity<String> borrowBook(@RequestBody Map<String, Object> requestBody) {
+        String username = (String) requestBody.get("username");
+        Integer bookId = (Integer) requestBody.get("bookId");
+    
         String responseMessage = bookService.borrowBook(bookId, username);
         return ResponseEntity.ok(responseMessage);
     }
+
 
     @PostMapping("/books/return")
     public ResponseEntity<String> returnBook(@RequestParam String username, @RequestParam Integer bookId) {
