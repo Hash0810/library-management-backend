@@ -10,7 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lib.model.Book;
 import com.lib.model.BookTransaction;
 import com.lib.model.User;
+import com.lib.model.BookRequest;
+import com.lib.model.RequestStatus;
 import com.lib.repository.BookRepository;
+import com.lib.repository.BookRequestRepository;
 import com.lib.repository.BookTransactionRepository;
 
 @Service
@@ -27,7 +30,9 @@ public class BookService {
 
     @Autowired
     private UserService userService;
-    
+
+    @Autowired
+    private BookRequestRepository bookRequestRepository;
     public Book findById(Integer bookId) {
         return bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found with ID: " + bookId));
