@@ -30,17 +30,16 @@ public class LibrarianController {
 
     @PostMapping("/addBook")
     public ResponseEntity<String> addBook(@RequestBody Map<String, Object> payload) {
-        Object userIdObj = ;
-    
-        if (userIdObj == null || bookObj == null) {
-            return ResponseEntity.badRequest().body("Missing userId or book data");
-        }
-    
         Integer userId =  ((Number)payload.get("userId")).intValue();
     
         // Convert the bookObj to Book using ObjectMapper
         Book book = new ObjectMapper().convertValue(payload.get("book"), Book.class);
     
+        if (userIdObj == null || bookObj == null) {
+            return ResponseEntity.badRequest().body("Missing userId or book data");
+        }
+    
+        
         bookService.addBook(book, userId);
         return ResponseEntity.ok("Book added successfully.");
     }
