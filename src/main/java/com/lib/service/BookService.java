@@ -41,10 +41,18 @@ public class BookService {
                 .orElseThrow(() -> new RuntimeException("Book not found with ID: " + bookId));
     }
 
-    public Book addBook(Book book) {
-        book.setAvailable(true);  // Assuming books are available when added
+    public Book addBook(Book book, int userId) {
+        User librarian = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    
+        book.setAddedBy(librarian);
+        book.setAvailable(true);
+        book.setCreatedAt(LocalDateTime.now()); // optional
+        book.setUpdatedAt(LocalDateTime.now()); // optional
+    
         return bookRepository.save(book);
     }
+
 
     public void updateBookAvailability(Integer bookId, boolean isAvailable) {
         Book book = findById(bookId);
