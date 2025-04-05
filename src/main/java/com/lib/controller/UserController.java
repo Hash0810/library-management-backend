@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.data.domain.Page;
 import com.lib.dto.EmailRequest;
 import com.lib.dto.FineHistory;
 import com.lib.dto.LoginRequest;
@@ -26,7 +26,7 @@ import com.lib.model.User;
 import com.lib.service.BookService;
 import com.lib.service.FineService;
 import com.lib.service.UserService;
-
+import Page;
 import jakarta.validation.Valid;
 
 @RestController
@@ -67,7 +67,9 @@ public class UserController {
 
     // Verify OTP for registration
     @PostMapping("/verify-signup-otp")
-    public ResponseEntity<String> verifySignupOtp(@RequestParam String email, @RequestParam String otp) {
+    public ResponseEntity<String> verifySignupOtp(@RequestBody Map<String, String> requestData) {
+        String email = requestData.get("email");
+        String otp = requestData.get("otp");
         String responseMessage = userService.verifyRegistrationOtp(email, otp);
         return ResponseEntity.ok(responseMessage);
     }
@@ -88,10 +90,11 @@ public class UserController {
 
     // Verify OTP for login
     @PostMapping("/verify-login-otp")
-    public ResponseEntity<String> verifyLoginOtp(@RequestParam String email, @RequestParam String otp) {
+    public ResponseEntity<String> verifyLoginOtp(@RequestBody Map<String, String> requestData) {
         try {
             // Retrieve email associated with the username
-
+            String email = requestData.get("email");
+            String otp = requestData.get("otp");
             // Verify the OTP (assuming you have an OTPService for validation)
             boolean isOtpValid = userService.verifyLoginOtp(email, otp);
 
@@ -115,9 +118,9 @@ public class UserController {
 
     @PostMapping("/verify-reset-password-otp")
     public ResponseEntity<String> verifyResetPasswordOtp(
-            @RequestParam String email,
-            @RequestParam String otp) {
-        System.out.println(email + " " + otp);
+            @RequestBody Map<String, String> requestData) {
+        String email = requestData.get("email");
+        String otp = requestData.get("otp");
         String responseMessage = userService.verifyResetPasswordOtp(email, otp);
         return ResponseEntity.ok(responseMessage);
     }
@@ -177,11 +180,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
-    @GetMapping("/book-history")
-    public ResponseEntity<List<BookTransaction>> getBorrowingHistory(@RequestParam String username) {
-        List<BookTransaction> history = bookService.getBorrowedBooksByUsername(username);
-        
-        return ResponseEntity.ok(history != null ? history : new ArrayList<>());
+    @PostMapping("/book-history")
+    public ResponseEntity<Page<BookTransaction>> getBorrowingHistory(@RequestBody Map<String, Object> request) {
+        String username = (String) request.get("username");
+        int page = (int) request.getOrDefault("page", 0);  // Default to page 0
+        int size = (int) request.getOrDefault("size", 10); // Default page size 10
+        String sortBy = (String) request.getOrDefault("sortBy", "borrowDate"); // Default sort field
+        String sortOrder = (String) request.getOrDefault("sortOrder", "asc"); // Default sort order
+        Sort sort = Sort.by(sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        Page<BookTransaction> history = bookService.getBorrowedBooksByUsername(username, page, size, sort); // Include sort parameter
+        return ResponseEntity.ok(history);
     }
 
     @GetMapping("/fine-history")
