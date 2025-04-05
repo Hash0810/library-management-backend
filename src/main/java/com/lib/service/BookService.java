@@ -6,7 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.lib.model.Book;
 import com.lib.model.BookTransaction;
 import com.lib.model.User;
@@ -126,20 +127,19 @@ public class BookService {
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
-    public List<BookTransaction> getBorrowedBooksByUsername(String username) {
-    	 List<BookTransaction> transactions = bookTransactionRepository.findByUser_Username(username);
-    	 for(BookTransaction transaction:transactions)
-    	 {
-    		 if(transaction.getReturnDate()== null)
-    		 {
-    			 transaction.setStatus("Not Returned");
-    		 }
-    		 else
-    		 {
-    			 transaction.setStatus("Returned on "+ transaction.getReturnDate().toString());
-    		 }
-    	 }
-    	 return transactions;
+    public Page<BookTransaction> getBorrowedBooksByUsername(String username, int page, int size,Sort sort) {
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<BookTransaction> transactions = bookTransactionRepository.findByUser_Username(username, pageable);
+
+        transactions.forEach(transaction -> {
+            if (transaction.getReturnDate() == null) {
+                transaction.setStatus("Not Returned");
+            } else {
+                transaction.setStatus("Returned on " + transaction.getReturnDate().toString());
+            }
+        });
+
+        return transactions;
     }
     @Transactional
     public String approveBookRequest(Integer requestId) {
