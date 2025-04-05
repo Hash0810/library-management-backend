@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lib.model.Book;
 import com.lib.model.Fine;
 import com.lib.service.BookService;
@@ -29,10 +29,22 @@ public class LibrarianController {
     private FineService fineService;
 
     @PostMapping("/addBook")
-    public ResponseEntity<String> addBook(@RequestBody Book book) {
-        bookService.addBook(book);
+    public ResponseEntity<String> addBook(@RequestBody Map<String, Object> payload) {
+        Object userIdObj = ;
+    
+        if (userIdObj == null || bookObj == null) {
+            return ResponseEntity.badRequest().body("Missing userId or book data");
+        }
+    
+        Integer userId =  ((Number)payload.get("userId")).intValue();
+    
+        // Convert the bookObj to Book using ObjectMapper
+        Book book = new ObjectMapper().convertValue(payload.get("book"), Book.class);
+    
+        bookService.addBook(book, userId);
         return ResponseEntity.ok("Book added successfully.");
     }
+
 
     @PutMapping("/updateBookStatus")
     public ResponseEntity<String> updateBookStatus(@RequestParam Integer bookId, @RequestParam boolean isAvailable) {
