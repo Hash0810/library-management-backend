@@ -35,7 +35,7 @@ public class LibrarianController {
         // Convert the bookObj to Book using ObjectMapper
         Book book = new ObjectMapper().convertValue(payload.get("book"), Book.class);
     
-        if (userIdObj == null || book == null) {
+        if (userId == null || book == null) {
             return ResponseEntity.badRequest().body("Missing userId or book data");
         }
     
