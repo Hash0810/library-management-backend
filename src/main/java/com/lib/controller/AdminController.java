@@ -50,12 +50,6 @@ public class AdminController {
         return ResponseEntity.ok(responseMessage);
     }
 
-    // Endpoint to add a book by the Admin
-    @PostMapping("/addBook")
-    public ResponseEntity<?> addBook(@RequestBody Book book) {
-        return new ResponseEntity<>(bookService.addBook(book), HttpStatus.CREATED);
-    }
-
     // Test endpoint to check if the controller is working
     @GetMapping("/test")
     public String test() {
