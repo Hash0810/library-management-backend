@@ -194,4 +194,10 @@ public class BookService {
     
         return "Book request rejected.";
     }
+    public List<String> getAllGenres() {
+        return bookRepository.findAll().stream()
+            .map(Book::getGenre)
+            .distinct()
+            .collect(Collectors.toList());
+    }
 }
