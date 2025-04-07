@@ -93,13 +93,7 @@ public class Book {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
     
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
     public void setCopies(int copies){
         this.copies=copies;
