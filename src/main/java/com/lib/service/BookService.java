@@ -53,9 +53,6 @@ public class BookService {
     
         book.setAddedBy(librarian);
         book.setAvailable(true);
-        book.setCreatedAt(LocalDateTime.now()); // optional
-        book.setUpdatedAt(LocalDateTime.now()); // optional
-    
         return bookRepository.save(book);
     }
 
