@@ -38,6 +38,10 @@ public class BookService {
 
     @Autowired
     private BookRequestRepository bookRequestRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+    
     public Book findById(Integer bookId) {
         return bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found with ID: " + bookId));
