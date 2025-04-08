@@ -21,7 +21,7 @@ public class AIController {
     }
     
     @GetMapping("/chat")
-    public ResponseEntity<String> sendMessage(@RequestParam("prompt") String prompt) {
+    public ResponseEntity<String> sendMessage(@RequestParam(name="prompt") String prompt) {
         return ResponseEntity.ok(springOpenService.getAIResponse(prompt));
     }
 }
