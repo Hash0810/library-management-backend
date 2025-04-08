@@ -1,7 +1,6 @@
 package com.lib.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
@@ -12,35 +11,40 @@ import org.springframework.http.ResponseEntity;
 @Service
 public class SpringOpenService {
 
-    @Value("${spring.ai.openai.api-key}")
+    @Value("${groq.api.key}")
     private String apiKey;
 
-    @Value("${spring.ai.openai.model}")
+    @Value("${groq.api.model}")
     private String model;
-    
-    @Value("${openai.api.url}")
+
+    @Value("${groq.api.url}")
     private String apiUrl;
 
     private final RestTemplate restTemplate;
 
-    @Autowired
     public SpringOpenService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     public String getAIResponse(String prompt) {
-        // Set up headers
+        // Build headers
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiKey);
         headers.set("Content-Type", "application/json");
 
-        // Set up request body
-        String requestBody = "{\"model\": \"gpt-3.5-turbo\", \"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}]}";
+        // Escape quotes in the prompt
+        String escapedPrompt = prompt.replace("\"", "\\\"");
+
+        // Build request body
+        String requestBody = String.format(
+            "{\"model\": \"%s\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}]}",
+            model, escapedPrompt
+        );
 
         // Create HTTP entity
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        // Send request to OpenAI API
+        // Send POST request to Groq
         ResponseEntity<String> responseEntity = restTemplate.exchange(
             apiUrl,
             HttpMethod.POST,
@@ -48,7 +52,6 @@ public class SpringOpenService {
             String.class
         );
 
-        // Return the response content
         return responseEntity.getBody();
     }
 }
