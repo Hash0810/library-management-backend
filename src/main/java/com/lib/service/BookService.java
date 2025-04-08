@@ -29,7 +29,7 @@ public class BookService {
     private BookRepository bookRepository;
 
     @Autowired
-    private AIService aiService;
+    private SpringOpenService aiService;
 
     @Autowired
     private BookTransactionRepository bookTransactionRepository;
