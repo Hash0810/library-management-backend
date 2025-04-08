@@ -85,9 +85,11 @@ public class BookService {
         String prompt = "Given the following book description, return only the main genre as a one- or two-word answer, like 'Fantasy' or 'Science Fiction'. Do not include commas, lists, or explanations. Just the genre.\n\nDescription: " +
                 book.getBookName();
         
-        String category = springOpenService.getAIResponse(prompt); // AI API Call
-        book.setGenre(category);
-        bookRepository.save(book);
+        String category = springOpenService.getAIResponse(prompt); 
+        System.out.println(category);
+        // AI API Call
+        // book.setGenre(category);
+        // bookRepository.save(book);
         return category;
     }
     @Transactional
