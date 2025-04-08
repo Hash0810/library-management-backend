@@ -11,14 +11,14 @@ import org.springframework.http.ResponseEntity;
 @Service
 public class AIService {
 
-    @Value("${openai.api.url}")
-    private String apiUrl;
-
-    @Value("${spring.ai.openai.api-key}")
+     @Value("${groq.api.key}")
     private String apiKey;
 
-    @Value("${spring.ai.openai.model}")
-    private String modelVersion;
+    @Value("${groq.api.model}")
+    private String model;
+
+    @Value("${groq.api.url}")
+    private String apiUrl;
 
     private final RestTemplate restTemplate;
 
