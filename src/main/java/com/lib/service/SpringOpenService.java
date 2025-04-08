@@ -1,12 +1,11 @@
 package com.lib.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.util.*;
 
@@ -23,9 +22,11 @@ public class SpringOpenService {
     private String apiUrl;
 
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     public SpringOpenService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+        this.objectMapper = new ObjectMapper(); // Initialize Jackson
     }
 
     public String getAIResponse(String prompt) {
@@ -41,7 +42,7 @@ public class SpringOpenService {
         List<Map<String, String>> messages = new ArrayList<>();
         Map<String, String> message = new HashMap<>();
         message.put("role", "user");
-        message.put("content", prompt); // No escaping needed!
+        message.put("content", prompt);
         messages.add(message);
 
         body.put("messages", messages);
@@ -56,6 +57,12 @@ public class SpringOpenService {
                 String.class
         );
 
-        return responseEntity.getBody();
+        try {
+            JsonNode root = objectMapper.readTree(responseEntity.getBody());
+            return root.path("choices").get(0).path("message").path("content").asText().trim();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Unknown";
+        }
     }
 }
