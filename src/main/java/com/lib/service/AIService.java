@@ -32,7 +32,7 @@ public class AIService {
      */
 
     public String ask(String prompt) {
-        HttpEntity<String> entity = new HttpEntity<>(buildMessageBody(modelVersion, prompt), buildOpenAIHeaders());
+        HttpEntity<String> entity = new HttpEntity<>(buildMessageBody(model, prompt), buildOpenAIHeaders());
         ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class);
 
         // Log rate limiting headers if present
@@ -51,7 +51,7 @@ public class AIService {
         return headers;
     }
 
-    private String buildMessageBody(String modelVersion, String prompt) {
-        return String.format("{ \"model\": \"%s\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}]}", modelVersion, prompt);
+    private String buildMessageBody(String model, String prompt) {
+        return String.format("{ \"model\": \"%s\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}]}", model, prompt);
     }
 }
