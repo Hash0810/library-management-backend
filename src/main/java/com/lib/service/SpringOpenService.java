@@ -8,6 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
+import java.util.*;
+
 @Service
 public class SpringOpenService {
 
@@ -27,29 +29,31 @@ public class SpringOpenService {
     }
 
     public String getAIResponse(String prompt) {
-        // Build headers
+        // Headers
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiKey);
         headers.set("Content-Type", "application/json");
 
-        // Escape quotes in the prompt
-        String escapedPrompt = prompt.replace("\"", "\\\"");
+        // Request body as map
+        Map<String, Object> body = new HashMap<>();
+        body.put("model", model);
 
-        // Build request body
-        String requestBody = String.format(
-            "{\"model\": \"%s\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}]}",
-            model, escapedPrompt
-        );
+        List<Map<String, String>> messages = new ArrayList<>();
+        Map<String, String> message = new HashMap<>();
+        message.put("role", "user");
+        message.put("content", prompt); // No escaping needed!
+        messages.add(message);
 
-        // Create HTTP entity
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+        body.put("messages", messages);
 
-        // Send POST request to Groq
+        // Send request
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
         ResponseEntity<String> responseEntity = restTemplate.exchange(
-            apiUrl,
-            HttpMethod.POST,
-            requestEntity,
-            String.class
+                apiUrl,
+                HttpMethod.POST,
+                requestEntity,
+                String.class
         );
 
         return responseEntity.getBody();
