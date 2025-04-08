@@ -85,7 +85,7 @@ public class BookService {
         String prompt = "Categorize the following book based on its title " +
                 book.getBookName();
         
-        String category = springOpenService.ask(prompt); // AI API Call
+        String category = springOpenService.getAIResponse(prompt); // AI API Call
         book.setGenre(category);
         bookRepository.save(book);
         return category;
