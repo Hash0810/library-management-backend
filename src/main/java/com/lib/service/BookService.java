@@ -51,11 +51,19 @@ public class BookService {
     public Book addBook(Book book, int userId) {
         User librarian = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
-    
+        
         book.setAddedBy(librarian);
         book.setAvailable(true);
+        
+        // If no genre is provided, automatically set it via AI categorization.
+        if (book.getGenre() == null || book.getGenre().trim().isEmpty()) {
+            String genre = categorizeBookUsingAI(book);
+            book.setGenre(genre);
+        }
+        
         return bookRepository.save(book);
     }
+
 
 
     public void updateBookAvailability(Integer bookId, boolean isAvailable) {
