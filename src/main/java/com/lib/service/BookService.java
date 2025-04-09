@@ -152,7 +152,7 @@ public class BookService {
     
         // ✅ Make the book available again
         book.setAvailable(true);
-        book.setQuantity(book.getQuantity() + transactions.size());
+        book.setQuantity(book.getCopies() + transactions.size());
         book.setBorrowedBy(null);
         bookRepository.save(book);
     
