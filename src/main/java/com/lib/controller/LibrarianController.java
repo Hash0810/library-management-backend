@@ -109,7 +109,7 @@ public class LibrarianController {
         return ResponseEntity.ok(responseMessage);
     }
     @GetMapping("/sendReceipt/{username}")
-    public ResponseEntity<String> sendReceipt(@PathVariable String username) {
+    public ResponseEntity<String> sendReceipt(@PathVariable("username") String username) {
         try {
             String result = librarianService.sendReceiptToUser(username);
             return ResponseEntity.ok(result);
@@ -119,7 +119,7 @@ public class LibrarianController {
         }
     }
     @GetMapping("/receipt/{username}")
-    public ResponseEntity<byte[]> generateReceipt(@PathVariable String username) {
+    public ResponseEntity<byte[]> generateReceipt(@PathVariable("username") String username) {
         try {
             byte[] pdf = librarianService.generateUserReceipt(username);
             HttpHeaders headers = new HttpHeaders();
