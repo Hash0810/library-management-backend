@@ -50,4 +50,26 @@ public class LibrarianService {
 
         return "Receipt sent to email successfully.";
     }
+    public byte[] generateUserReceipt(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+    
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE); // fetch all transactions
+        List<BookTransaction> transactions = bookTransactionRepository
+                .findByUser_Username(username, pageable)
+                .getContent();
+    
+        if (transactions.isEmpty()) {
+            throw new RuntimeException("No transactions found for user");
+        }
+    
+        try {
+            return receiptService.generateReceiptPdf(transactions);
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating PDF receipt: " + e.getMessage(), e);
+        }
+    }
+
 }
