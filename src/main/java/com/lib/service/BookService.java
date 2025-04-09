@@ -130,21 +130,31 @@ public class BookService {
         if (book.isAvailable()) {
             throw new RuntimeException("Book with ID " + bookId + " is already available.");
         }
-
-        // ✅ Find the active transaction
-        BookTransaction transaction = bookTransactionRepository
-            .findByBook_IdAndUser_UsernameAndReturnDateIsNull(bookId, username)
-            .orElseThrow(() -> new RuntimeException("No active transaction found for this book and user."));
-
-        // ✅ Update return date
-        transaction.setReturnDate(LocalDate.now());
-        bookTransactionRepository.save(transaction);
-
+    
+        // ✅ Get all active borrow transactions for this user-book pair
+        List<BookTransaction> transactions = bookTransactionRepository
+                .findByBook_IdAndUser_UsernameAndReturnDateIsNull(bookId, username);
+    
+        if (transactions.isEmpty()) {
+            throw new RuntimeException("No active transaction found for this book and user.");
+        }
+    
+        // ✅ Mark only the earliest one as returned (or all of them, if you want)
+        BookTransaction transactionToReturn = transactions.get(0); // or use logic to find the earliest
+        transactionToReturn.setReturnDate(LocalDate.now());
+        bookTransactionRepository.save(transactionToReturn);
+    
+        // Optional: close any other duplicates too
+        for (int i = 1; i < transactions.size(); i++) {
+            transactions.get(i).setReturnDate(LocalDate.now());
+            bookTransactionRepository.save(transactions.get(i));
+        }
+    
         // ✅ Make the book available again
         book.setAvailable(true);
-        book.setBorrowedBy(null); // Clear borrower info
+        book.setBorrowedBy(null);
         bookRepository.save(book);
-
+    
         return "Book returned successfully.";
     }
 
