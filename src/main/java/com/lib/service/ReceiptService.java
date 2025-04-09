@@ -2,7 +2,7 @@ package com.lib.service;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import com.lib.entity.BookTransaction;
+import com.lib.model.BookTransaction;
 import com.lib.util.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import org.springframework.stereotype.Service;
