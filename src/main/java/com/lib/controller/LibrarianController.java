@@ -2,7 +2,7 @@ package com.lib.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import com.lib.service.LibrarianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +17,7 @@ import com.lib.model.Book;
 import com.lib.model.Fine;
 import com.lib.service.BookService;
 import com.lib.service.FineService;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/librarian")
@@ -27,6 +28,9 @@ public class LibrarianController {
     
     @Autowired
     private FineService fineService;
+    
+    @Autowired
+    private LibrarianService librarianService;
 
     @PostMapping("/addBook")
     public ResponseEntity<String> addBook(@RequestBody Map<String, Object> payload) {
@@ -99,18 +103,9 @@ public class LibrarianController {
     }
     @GetMapping("/sendReceipt/{username}")
     public ResponseEntity<String> sendReceipt(@PathVariable String username) {
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-    
-        List<BookTransaction> transactions = bookTransactionRepository.findByUser_Username(username);
-        if (transactions.isEmpty()) {
-            return ResponseEntity.badRequest().body("No transactions found for user");
-        }
-    
         try {
-            byte[] pdf = receiptService.generateReceiptPdf(transactions);
-            EmailService.sendReceiptWithPDF(user.getEmail(), pdf, "Book_Receipt.pdf");
-            return ResponseEntity.ok("Receipt sent to email successfully.");
+            String result = librarianService.sendReceiptToUser(username);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error sending receipt: " + e.getMessage());
