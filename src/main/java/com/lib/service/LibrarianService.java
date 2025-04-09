@@ -8,7 +8,8 @@ import com.lib.model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import com.google.zxing.WriterException;
 import com.itextpdf.text.DocumentException;
 
@@ -34,7 +35,9 @@ public class LibrarianService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<BookTransaction> transactions = bookTransactionRepository.findByUser_Username(username);
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE); // large enough to get all
+        List<BookTransaction> transactions = bookTransactionRepository.findByUser_Username(username, pageable).getContent();
+        
         if (transactions.isEmpty()) {
             throw new RuntimeException("No transactions found for user");
         }
