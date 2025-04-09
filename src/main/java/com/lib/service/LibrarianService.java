@@ -33,8 +33,10 @@ public class LibrarianService {
     private EmailService emailService;
 
     public String sendReceiptToUser(String username) throws IOException, DocumentException, WriterException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(username);
+        if(user==null){
+            throw new RuntimeException("User not found"));
+        }
 
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE); // large enough to get all
         List<BookTransaction> transactions = bookTransactionRepository.findByUser_Username(username, pageable).getContent();
