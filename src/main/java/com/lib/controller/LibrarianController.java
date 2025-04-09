@@ -21,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lib.model.Book;
 import com.lib.model.Fine;
+import com.lib.model.BookRequest;
 import com.lib.service.BookService;
 import com.lib.service.FineService;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -130,6 +131,19 @@ public class LibrarianController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+    @PutMapping("/requests")
+    public ResponseEntity<List<BookRequest>> getRequestsByStatus(@RequestBody Map<String, String> payload) {
+        String status = payload.get("status");
+    
+        if (status == null || status.isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    
+        List<BookRequest> requests = bookService.getRequestsByStatus(status);
+        return ResponseEntity.ok(requests);
+    }
+
+
 
 
 }
