@@ -211,4 +211,8 @@ public class BookService {
             .distinct()
             .collect(Collectors.toList());
     }
+    public List<BookRequest> getRequestsByStatus(String status) {
+        RequestStatus requestStatus = RequestStatus.valueOf(status.toUpperCase());
+        return bookRequestRepository.findByStatus(requestStatus);
+    }
 }
