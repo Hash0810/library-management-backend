@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lib.model.Book;
 import com.lib.model.Fine;
@@ -109,6 +111,19 @@ public class LibrarianController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error sending receipt: " + e.getMessage());
+        }
+    }
+    @GetMapping("/receipt/{username}")
+    public ResponseEntity<byte[]> generateReceipt(@PathVariable String username) {
+        try {
+            byte[] pdf = librarianService.generateUserReceipt(username);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "Book_Receipt.pdf");
+    
+            return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
