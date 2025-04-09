@@ -35,7 +35,7 @@ public class LibrarianService {
     public String sendReceiptToUser(String username) throws IOException, DocumentException, WriterException {
         User user = userRepository.findByUsername(username);
         if(user==null){
-            throw new RuntimeException("User not found"));
+            throw new RuntimeException("User not found");
         }
 
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE); // large enough to get all
