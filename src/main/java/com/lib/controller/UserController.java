@@ -153,10 +153,14 @@ public class UserController {
 
 
     @PostMapping("/books/return")
-    public ResponseEntity<String> returnBook(@RequestParam String username, @RequestParam Integer bookId) {
+    public ResponseEntity<String> returnBook(@RequestBody Map<String, Object> requestMap) {
+        String username = (String) requestMap.get("username");
+        Integer bookId = (Integer) requestMap.get("bookId");
+    
         String responseMessage = bookService.returnBook(username, bookId);
         return ResponseEntity.ok(responseMessage);
     }
+
 
     @GetMapping("/get-user-details")
     public ResponseEntity<User> getUserDetails(@RequestParam String email) {
