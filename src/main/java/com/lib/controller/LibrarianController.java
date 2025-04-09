@@ -97,6 +97,25 @@ public class LibrarianController {
         String responseMessage = bookService.rejectBookRequest(requestId);
         return ResponseEntity.ok(responseMessage);
     }
+    @GetMapping("/sendReceipt/{username}")
+    public ResponseEntity<String> sendReceipt(@PathVariable String username) {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    
+        List<BookTransaction> transactions = bookTransactionRepository.findByUser_Username(username);
+        if (transactions.isEmpty()) {
+            return ResponseEntity.badRequest().body("No transactions found for user");
+        }
+    
+        try {
+            byte[] pdf = receiptService.generateReceiptPdf(transactions);
+            EmailService.sendReceiptWithPDF(user.getEmail(), pdf, "Book_Receipt.pdf");
+            return ResponseEntity.ok("Receipt sent to email successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error sending receipt: " + e.getMessage());
+        }
+    }
 
 
 }
