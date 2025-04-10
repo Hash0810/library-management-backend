@@ -127,9 +127,6 @@ public class BookService {
     @Transactional
     public String returnBook(String username, Integer bookId) {
         Book book = findById(bookId);
-        if (book.isAvailable()) {
-            throw new RuntimeException("Book with ID " + bookId + " is already available.");
-        }
     
         // ✅ Get all active borrow transactions for this user-book pair
         List<BookTransaction> transactions = bookTransactionRepository
@@ -139,21 +136,26 @@ public class BookService {
             throw new RuntimeException("No active transaction found for this book and user.");
         }
     
-        // ✅ Mark only the earliest one as returned (or all of them, if you want)
-        BookTransaction transactionToReturn = transactions.get(0); // or use logic to find the earliest
+        // ✅ Mark only the earliest one as returned (or all if you want)
+        BookTransaction transactionToReturn = transactions.get(0);
         transactionToReturn.setReturnDate(LocalDate.now());
         bookTransactionRepository.save(transactionToReturn);
     
-        // Optional: close any other duplicates too
+        // Optional: mark any duplicate transactions
         for (int i = 1; i < transactions.size(); i++) {
             transactions.get(i).setReturnDate(LocalDate.now());
             bookTransactionRepository.save(transactions.get(i));
         }
     
-        // ✅ Make the book available again
-        book.setAvailable(true);
+        // ✅ Update book copies
         book.setCopies(book.getCopies() + transactions.size());
-        book.setBorrowedBy(null);
+    
+        // If all copies are returned, you might want to mark the book as fully available
+        if (book.getCopies() == book.getTotalCopies()) {
+            book.setAvailable(true);
+            book.setBorrowedBy(null);
+        }
+    
         bookRepository.save(book);
     
         return "Book returned successfully.";
