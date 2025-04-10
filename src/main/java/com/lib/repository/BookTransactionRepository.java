@@ -10,4 +10,5 @@ import com.lib.model.BookTransaction;
 public interface BookTransactionRepository extends JpaRepository<BookTransaction, Integer> {
 	Page<BookTransaction> findByUser_Username(String username, Pageable pageable);
 	List<BookTransaction> findByBook_IdAndUser_UsernameAndReturnDateIsNull(Integer bookId, String username);
+	long countByBook_IdAndReturnDateIsNull(Integer bookId);
 }
