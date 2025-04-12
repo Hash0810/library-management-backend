@@ -9,11 +9,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import com.lib.util.JwtUtil;
 
 @Component
 public class JwtRequestFilter extends WebAuthenticationFilter {
 
-    @Autowired
+   @Autowired
     private JwtUtil jwtUtil;
 
     @Override
