@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-    private String secretKey = "your_secret_key"; // Change this to a secure key
+    private String secretKey = "ZQX2ZRLzjZOKgbxjsFhoW1I1RMFMMZCJ/UDBsj3KDJY="; // Change this to a secure key
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
