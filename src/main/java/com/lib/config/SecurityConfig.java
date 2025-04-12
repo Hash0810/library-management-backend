@@ -19,7 +19,7 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api/u/login", "/api/u/signup").permitAll() // Allow access to these endpoints
+            .requestMatchers("/api/u/login", "/api/u/signup").permitAll() // Allow access to these endpoints
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
