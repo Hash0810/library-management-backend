@@ -102,9 +102,9 @@ public class UserController {
             @RequestParam String otp) {
     
         try {
-            boolean isOtpValid = userService.verifyRegistrationOtp(email, otp);
-    
-            if (isOtpValid) {
+            String result = userService.verifyRegistrationOtp(email, otp);
+
+            if (result.contains("successful")) {
                 User user = userService.findByEmail(email);
                 String jwtToken = jwtUtil.generateToken(user.getUsername());
     
@@ -177,10 +177,9 @@ public class UserController {
         try {
             String email = requestData.get("email");
             String otp = requestData.get("otp");
-    
-            boolean isOtpValid = userService.verifyResetPasswordOtp(email, otp);
-    
-            if (isOtpValid) {
+            String result = userService.verifyResetPasswordOtp(email, otp);
+            if (result.contains("OTP verified")) 
+            {
                 User user = userService.findByEmail(email);
                 String jwtToken = jwtUtil.generateToken(user.getUsername());
     
