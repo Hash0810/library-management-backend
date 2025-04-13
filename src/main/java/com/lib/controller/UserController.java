@@ -76,19 +76,55 @@ public class UserController {
 
     // Verify OTP for registration
     @PostMapping("/verify-signup-otp")
-    public ResponseEntity<String> verifySignupOtp(@RequestBody Map<String, String> requestData) {
+    public ResponseEntity<Map<String, String>> verifySignupOtp(@RequestBody Map<String, String> requestData) {
         String email = requestData.get("email");
         String otp = requestData.get("otp");
-        String responseMessage = userService.verifyRegistrationOtp(email, otp);
-        return ResponseEntity.ok(responseMessage);
+        String result = userService.verifyRegistrationOtp(email, otp);
+        
+        if (result.contains("successful")) {
+            User user = userService.findByEmail(email);
+            String token = jwtUtil.generateToken(user.getUsername());
+    
+            Map<String, String> response = new HashMap<>();
+            response.put("message", result);
+            response.put("token", token);
+            response.put("username", user.getUsername());
+            response.put("role", user.getRole().toString());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", result));
+        }
     }
 
     @PostMapping("/verify-admin-signup-otp")
-    public ResponseEntity<String> verifyAdminSignupOtp(@RequestParam String email, @RequestParam String otp) {
-        String responseMessage = userService.verifyRegistrationOtp(email, otp);
-        return ResponseEntity.ok(responseMessage);
+    public ResponseEntity<Map<String, String>> verifyAdminSignupOtp(
+            @RequestParam String email,
+            @RequestParam String otp) {
+    
+        try {
+            boolean isOtpValid = userService.verifyRegistrationOtp(email, otp);
+    
+            if (isOtpValid) {
+                User user = userService.findByEmail(email);
+                String jwtToken = jwtUtil.generateToken(user.getUsername());
+    
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Admin signup OTP verified successfully");
+                response.put("username", user.getUsername());
+                response.put("token", jwtToken);
+    
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                     .body(Map.of("message", "Invalid OTP"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(Map.of("message", "Error during OTP verification"));
+        }
     }
 
+    
     // Login a user and send OTP for login verification
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) throws Exception {
@@ -99,23 +135,32 @@ public class UserController {
 
     // Verify OTP for login
     @PostMapping("/verify-login-otp")
-    public ResponseEntity<String> verifyLoginOtp(@RequestBody Map<String, String> requestData) {
+    public ResponseEntity<Map<String, String>> verifyLoginOtp(@RequestBody Map<String, String> requestData) {
         try {
-            // Retrieve email associated with the username
             String email = requestData.get("email");
             String otp = requestData.get("otp");
-            // Verify the OTP (assuming you have an OTPService for validation)
+    
             boolean isOtpValid = userService.verifyLoginOtp(email, otp);
-
+    
             if (isOtpValid) {
-                return ResponseEntity.ok("Login OTP verification successful");
+                User user = userService.findByEmail(email);
+                String token = jwtUtil.generateToken(user.getUsername());
+    
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Login OTP verification successful");
+                response.put("token", token);
+                response.put("username", user.getUsername());
+                response.put("role", user.getRole().toString());
+                return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid OTP"));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during OTP verification");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Error during OTP verification"));
         }
     }
+
 
     // Initiate password reset process and send OTP
     @PostMapping("/reset-password-initiate")
@@ -126,13 +171,35 @@ public class UserController {
     }
 
     @PostMapping("/verify-reset-password-otp")
-    public ResponseEntity<String> verifyResetPasswordOtp(
+    public ResponseEntity<Map<String, String>> verifyResetPasswordOtp(
             @RequestBody Map<String, String> requestData) {
-        String email = requestData.get("email");
-        String otp = requestData.get("otp");
-        String responseMessage = userService.verifyResetPasswordOtp(email, otp);
-        return ResponseEntity.ok(responseMessage);
+    
+        try {
+            String email = requestData.get("email");
+            String otp = requestData.get("otp");
+    
+            boolean isOtpValid = userService.verifyResetPasswordOtp(email, otp);
+    
+            if (isOtpValid) {
+                User user = userService.findByEmail(email);
+                String jwtToken = jwtUtil.generateToken(user.getUsername());
+    
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Password reset OTP verified successfully");
+                response.put("username", user.getUsername());
+                response.put("token", jwtToken);
+    
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                     .body(Map.of("message", "Invalid OTP"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(Map.of("message", "Error during OTP verification"));
+        }
     }
+
 
     // Reset password with OTP verification
     @PostMapping("/reset-password")
