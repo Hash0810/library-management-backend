@@ -18,20 +18,28 @@ public class JwtRequestFilter extends WebAuthenticationFilter {
     private JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
+   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+           throws ServletException, IOException {
+   
+       final String authorizationHeader = request.getHeader("Authorization");
+   
+       String username = null;
+       String jwt = null;
+   
+       if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+           jwt = authorizationHeader.substring(7);
+           username = jwtUtil.extractUsername(jwt);
+       }
+   
+       if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+           // You might need to load user details here manually if not using default UserDetailsService
+           UsernamePasswordAuthenticationToken authToken =
+                   new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+   
+           SecurityContextHolder.getContext().setAuthentication(authToken);
+       }
+   
+       chain.doFilter(request, response);
+   }
 
-        String username = null;
-        String jwt = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
-        }
-
-        // Additional logic to authenticate the user can be added here
-
-        chain.doFilter(request, response);
-    }
 }
