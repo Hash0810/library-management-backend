@@ -29,6 +29,7 @@ import com.lib.model.User;
 import com.lib.service.BookService;
 import com.lib.service.FineService;
 import com.lib.service.UserService;
+import com.lib.util.JwtUtil;
 import jakarta.validation.Valid;
 
 @RestController
@@ -43,6 +44,9 @@ public class UserController {
 
     @Autowired
     private FineService fineService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     // Register a new user and send OTP for verification
    @PostMapping("/profile")
@@ -210,5 +214,15 @@ public class UserController {
         List<User> librarians = userService.getUsersByRole(Role.LIBRARIAN);
         return ResponseEntity.ok(librarians);
     }
+    @PostMapping("/test-jwt")
+    public ResponseEntity<Map<String, String>> testJwt(@RequestBody Map<String, String> payload) {
+        String username = payload.get("username");
+        String token = jwtUtil.generateToken(username);
+    
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response);
+    }
+
 
 }
