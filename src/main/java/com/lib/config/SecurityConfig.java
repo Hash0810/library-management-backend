@@ -23,7 +23,7 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-            .requestMatchers("/api/u/verify-login-otp", "/api/u/verify-reset-password-otp","/api/u/verify-admin-signup-otp","/api/u/verify-signup-otp").permitAll() // Allow access to these endpoints
+            .requestMatchers("/api/u/verify-login-otp","/api/u/login","/api/u/signup","/api/u/reset-password-initiate", "/api/u/verify-reset-password-otp","/api/u/verify-admin-signup-otp","/api/u/verify-signup-otp").permitAll() // Allow access to these endpoints
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
