@@ -26,17 +26,29 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+            .cors() // ✅ This enables CORS using your CorsConfigurationSource
+            .and()
+            .csrf().disable()
             .authorizeRequests()
-            .requestMatchers("/api/u/verify-login-otp","/api/u/login","/api/u/signup","/api/u/reset-password-initiate", "/api/u/verify-reset-password-otp","/api/u/verify-admin-signup-otp","/api/u/verify-signup-otp").permitAll() // Allow access to these endpoints
+            .requestMatchers(
+                "/api/u/verify-login-otp",
+                "/api/u/login",
+                "/api/u/signup",
+                "/api/u/reset-password-initiate",
+                "/api/u/verify-reset-password-otp",
+                "/api/u/verify-admin-signup-otp",
+                "/api/u/verify-signup-otp"
+            ).permitAll()
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        
+    
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        
+    
         return http.build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
