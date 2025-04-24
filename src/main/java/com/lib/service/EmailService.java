@@ -1,5 +1,7 @@
 package com.lib.service;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Properties;
 import jakarta.activation.DataHandler;
 import jakarta.activation.DataSource;
@@ -23,10 +25,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
+
+    @Value("${spring.mail.fromEmail}")
+    private String fromEmail;
+
+    @Value("${spring.mail.username}")
+    private String username;
+
+    @Value("${spring.mail.password}")
+    private String appPassword;
     public static void sendOTP(String to, String otp) {
-        String fromEmail = "unnamsiva9963@gmail.com";
-        final String username = "unnamsiva9963@gmail.com";
-        final String appPassword = "tjrv gsct rtpd qlsw";
+        
         String host = "smtp.gmail.com";
 
         Properties props = new Properties();
@@ -58,9 +67,7 @@ public class EmailService {
     }
 
     public static void sendReceiptWithPDF(String to, byte[] pdfBytes, String fileName) {
-        String fromEmail = "unnamsiva9963@gmail.com";
-        final String username = "unnamsiva9963@gmail.com";
-        final String appPassword = "tjrv gsct rtpd qlsw";
+        
         String host = "smtp.gmail.com";
 
         Properties props = new Properties();
