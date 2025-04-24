@@ -66,7 +66,7 @@ public void sendOTP(String to, String otp) {
     }
 	public void sendReceiptWithPDF(String to, byte[] pdfBytes, String fileName) {
 		
-		String host = "smtp.gmail.com"
+		String host = "smtp.gmail.com";
 	        Properties props = new Properties();
 	        props.put("mail.smtp.auth", "true");
 	        props.put("mail.smtp.starttls.enable", "true");
