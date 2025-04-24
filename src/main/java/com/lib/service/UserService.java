@@ -23,6 +23,9 @@ public class UserService{
     @Autowired
     private OTPService otpService;
 
+    @Autowired
+    private EmailService emailService;
+
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -38,7 +41,7 @@ public class UserService{
         userRepository.save(user);
         // Generate and send OTP for email verification
         String otp = otpService.generateOTP(user.getEmail());
-        EmailService.sendOTP(user.getEmail(), otp);
+        emailService.sendOTP(user.getEmail(), otp);
 
         return "User created successfully with role: " + user.getRole() + ". OTP has been sent to the registered email.";
     }
@@ -62,7 +65,7 @@ public class UserService{
 
         // Generate and send OTP
         String otp = otpService.generateOTP(user.getEmail());
-        EmailService.sendOTP(user.getEmail(), otp);
+        emailService.sendOTP(user.getEmail(), otp);
 
         return "User registered successfully. OTP has been sent to the registered email.";
     }
@@ -93,7 +96,7 @@ public class UserService{
         String otp = otpService.generateOTP(user.getEmail());
 
         try {
-            EmailService.sendOTP(user.getEmail(), otp);
+            emailService.sendOTP(user.getEmail(), otp);
         } catch (Exception e) {
             throw new RuntimeException("Failed to send OTP. Please try again.", e);
         }
@@ -133,7 +136,7 @@ public class UserService{
 
         // Generate and send OTP
         String otp = otpService.generateOTP(email);
-        EmailService.sendOTP(email, otp); // Ensure `sendOTP` returns a boolean indicating success
+        emailService.sendOTP(email, otp); // Ensure `sendOTP` returns a boolean indicating success
         userRepository.save(user);
             return "An OTP has been sent to your registered email.";
     }
