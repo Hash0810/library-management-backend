@@ -34,7 +34,8 @@ public class EmailService {
 
     @Value("${spring.mail.password}")
     private String appPassword;
-    public static void sendOTP(String to, String otp) {
+	
+    public void sendOTP(String to, String otp) {
         
         String host = "smtp.gmail.com";
 
@@ -66,7 +67,7 @@ public class EmailService {
         }
     }
 
-    public static void sendReceiptWithPDF(String to, byte[] pdfBytes, String fileName) {
+    public void sendReceiptWithPDF(String to, byte[] pdfBytes, String fileName) {
         
         String host = "smtp.gmail.com";
 
