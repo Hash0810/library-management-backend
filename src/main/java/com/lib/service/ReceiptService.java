@@ -67,4 +67,46 @@ public class ReceiptService {
 
         return out.toByteArray();
     }
+    public byte[] generateFinePDF(User user, Fine fine) throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PdfWriter writer = new PdfWriter(out);
+        PdfDocument pdfDoc = new PdfDocument(writer);
+        Document document = new Document(pdfDoc);
+    
+        document.add(new Paragraph("Library Fine Notification")
+                .setBold()
+                .setFontSize(16)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginBottom(20));
+    
+        document.add(new Paragraph("Dear " + user.getFullName() + ","));
+        document.add(new Paragraph("You have incurred a fine for the following reason:\n"));
+    
+        Table table = new Table(2);
+        table.addCell("Book Name");
+        table.addCell(fine.getTransaction().getBook().getBookName());
+    
+        table.addCell("Fine Amount");
+        table.addCell("$" + fine.getAmount());
+    
+        table.addCell("Reason");
+        table.addCell(fine.getReason());
+    
+        table.addCell("Borrow Date");
+        table.addCell(fine.getTransaction().getBorrowDate().toString());
+    
+        table.addCell("Due Date");
+        LocalDate dueDate = fine.getTransaction().getBorrowDate().plusDays(14);
+        table.addCell(dueDate.toString());
+    
+        table.addCell("Generated On");
+        table.addCell(LocalDate.now().toString());
+    
+        document.add(table);
+        document.add(new Paragraph("\nPlease pay this fine as soon as possible to avoid any further penalties.\nThank you."));
+    
+        document.close();
+        return out.toByteArray();
+    }
+
 }
