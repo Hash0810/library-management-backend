@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import com.lib.model.User;
+import com.lib.model.Fine;
+import java.time.LocalDate;
+
 
 @Service
 public class ReceiptService {
@@ -67,46 +71,37 @@ public class ReceiptService {
 
         return out.toByteArray();
     }
-    public byte[] generateFinePDF(User user, Fine fine) throws Exception {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PdfWriter writer = new PdfWriter(out);
-        PdfDocument pdfDoc = new PdfDocument(writer);
-        Document document = new Document(pdfDoc);
+    public byte[] generateFinePDF(User user, Fine fine) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, baos);
+            document.open();
     
-        document.add(new Paragraph("Library Fine Notification")
-                .setBold()
-                .setFontSize(16)
-                .setTextAlignment(TextAlignment.CENTER)
-                .setMarginBottom(20));
+            // Title
+            Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+            Paragraph title = new Paragraph("Fine Receipt", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
     
-        document.add(new Paragraph("Dear " + user.getFullName() + ","));
-        document.add(new Paragraph("You have incurred a fine for the following reason:\n"));
+            document.add(new Paragraph("\n"));
     
-        Table table = new Table(2);
-        table.addCell("Book Name");
-        table.addCell(fine.getTransaction().getBook().getBookName());
+            // User Info
+            document.add(new Paragraph("User: " + user.getUsername()));
+            document.add(new Paragraph("Email: " + user.getEmail()));
+            document.add(new Paragraph("Fine ID: " + fine.getId()));
+            document.add(new Paragraph("Amount: ₹" + fine.getAmount()));
+            document.add(new Paragraph("Issued On: " + fine.getIssuedDate()));
+            document.add(new Paragraph("Due Date: " + fine.getDueDate()));
     
-        table.addCell("Fine Amount");
-        table.addCell("$" + fine.getAmount());
+            document.add(new Paragraph("\n\nThank you for your cooperation."));
     
-        table.addCell("Reason");
-        table.addCell(fine.getReason());
+            document.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     
-        table.addCell("Borrow Date");
-        table.addCell(fine.getTransaction().getBorrowDate().toString());
-    
-        table.addCell("Due Date");
-        LocalDate dueDate = fine.getTransaction().getBorrowDate().plusDays(14);
-        table.addCell(dueDate.toString());
-    
-        table.addCell("Generated On");
-        table.addCell(LocalDate.now().toString());
-    
-        document.add(table);
-        document.add(new Paragraph("\nPlease pay this fine as soon as possible to avoid any further penalties.\nThank you."));
-    
-        document.close();
-        return out.toByteArray();
+        return baos.toByteArray();
     }
 
 }
