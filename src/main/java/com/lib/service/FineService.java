@@ -59,4 +59,8 @@ public class FineService {
                 fine.getReason()))
             .collect(Collectors.toList());
     }
+    public boolean existsByTransactionId(Integer transactionId) {
+        return fineRepository.existsByTransaction_Id(transactionId);
+    }
+
 }
