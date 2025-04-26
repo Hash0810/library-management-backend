@@ -1,5 +1,6 @@
 package com.lib.model;
 
+import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +24,10 @@ public class Fine {
     private double amount;
     private boolean isPaid;
     private String reason;
+
+    private LocalDate issuedDate;
+    private LocalDate dueDate;
+
 
     // Getters and setters
     public int getId() {
@@ -72,4 +77,20 @@ public class Fine {
     public void setReason(String reason) {
         this.reason = reason;
     }
+    public LocalDate getIssuedDate() {
+        return issuedDate;
+    }
+    
+    public void setIssuedDate(LocalDate issuedDate) {
+        this.issuedDate = issuedDate;
+    }
+    
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+    
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
 }
