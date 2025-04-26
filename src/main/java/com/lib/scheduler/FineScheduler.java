@@ -57,8 +57,7 @@ public class FineScheduler {
     private void sendFineEmail(User user, Fine fine) {
         try {
             byte[] pdf = receiptService.generateFinePDF(user, fine);
-            emailService.sendReceiptWithPDF(user.getEmail(), "Overdue Book Fine", 
-                "You have been fined for an overdue book. Please see attached receipt.", pdf);
+            emailService.sendFinePDF(user.getEmail(),pdf,"fine_receipt.pdf");
         } catch (IOException | DocumentException | WriterException e) {
             e.printStackTrace();
         }
