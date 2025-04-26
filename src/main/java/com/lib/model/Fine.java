@@ -28,7 +28,8 @@ public class Fine {
     private LocalDate issuedDate;
     private LocalDate dueDate;
 
-
+    @ManyToOne
+    private BookTransaction bookTransaction;
     // Getters and setters
     public int getId() {
         return id;
@@ -44,6 +45,14 @@ public class Fine {
 
     public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
+    }
+
+    public BookTransaction getBookTransaction() {
+        return bookTransaction;
+    }
+
+    public void setTransaction(BookTransaction bookTransaction) {
+        this.bookTransaction = bookTransaction;
     }
 
     public User getUser() {
