@@ -11,4 +11,5 @@ public interface BookTransactionRepository extends JpaRepository<BookTransaction
 	Page<BookTransaction> findByUser_Username(String username, Pageable pageable);
 	List<BookTransaction> findByBook_IdAndUser_UsernameAndReturnDateIsNull(Integer bookId, String username);
 	long countByBook_IdAndReturnDateIsNull(Integer bookId);
+	List<BookTransaction> findByReturnDateIsNull();
 }
