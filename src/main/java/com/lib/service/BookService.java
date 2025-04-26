@@ -42,6 +42,16 @@ public class BookService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FineService fineService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private ReceiptService receiptService;
+    
     
     public Book findById(Integer bookId) {
         return bookRepository.findById(bookId)
@@ -135,19 +145,37 @@ public class BookService {
             throw new RuntimeException("No active transaction found for this book and user.");
         }
     
-        // Mark all active transactions as returned
         for (BookTransaction tx : transactions) {
             tx.setReturnDate(LocalDate.now());
             bookTransactionRepository.save(tx);
+    
+            // Check for overdue
+            LocalDate dueDate = tx.getBorrowDate().plusDays(14);
+            if (tx.getReturnDate().isAfter(dueDate)) {
+                Fine fine = new Fine();
+                fine.setTransaction(tx);
+                fine.setAmount(ChronoUnit.DAYS.between(dueDate, tx.getReturnDate()) * 2.0); // ₹2 per day
+                fine.setPaid(false);
+                fine.setReason("Late return for " + tx.getBook().getBookName());
+                fine.setIssuedDate(LocalDate.now());
+                fine.setDueDate(LocalDate.now().plusDays(7)); // give 7 days to pay
+    
+                fineRepository.save(fine);
+    
+                // Send fine receipt
+                User user = tx.getUser();
+                byte[] pdf = receiptService.generateFinePDF(user, fine);
+                emailService.sendReceiptWithPDF(user.getEmail(), "Late Return Fine Notice", 
+                    "You have a fine for late return of a book. Please see the attached receipt.", pdf);
+            }
         }
     
         // Update book copies
         book.setCopies(book.getCopies() + transactions.size());
     
-        // Check if there are any *other* active borrows for this book
+        // Update availability if needed
         long remainingBorrows = bookTransactionRepository
                 .countByBook_IdAndReturnDateIsNull(bookId);
-    
         if (remainingBorrows == 0) {
             book.setAvailable(true);
             book.setBorrowedBy(null);
@@ -157,6 +185,7 @@ public class BookService {
     
         return "Book returned successfully.";
     }
+
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
