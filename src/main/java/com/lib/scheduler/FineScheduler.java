@@ -58,7 +58,7 @@ public class FineScheduler {
         try {
             byte[] pdf = receiptService.generateFinePDF(user, fine);
             emailService.sendFinePDF(user.getEmail(),pdf,"fine_receipt.pdf");
-        } catch (IOException | DocumentException | WriterException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
