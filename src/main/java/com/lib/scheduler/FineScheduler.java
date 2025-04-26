@@ -43,7 +43,7 @@ public class FineScheduler {
             LocalDate dueDate = tx.getBorrowDate().plusDays(14);
             if (LocalDate.now().isAfter(dueDate)) {
                 // Check if fine already exists for this transaction
-                boolean fineExists = tx.getFine() != null;
+                boolean fineExists = fineService.existsByTransactionId(tx.getId());
                 if (!fineExists) {
                     Fine fine = fineService.calculateFine(tx.getId());
                     if (fine != null) {
