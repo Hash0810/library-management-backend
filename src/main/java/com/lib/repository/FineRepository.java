@@ -12,6 +12,6 @@ import com.lib.model.User;
 public interface FineRepository extends JpaRepository<Fine, Integer> {
     List<Fine> findByUserIdAndIsPaidFalse(User user);
     List<Fine> findByUser_Username(String username);
-
+    boolean existsByTransaction_Id(Integer transactionId);
 }
 
