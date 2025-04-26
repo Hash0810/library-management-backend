@@ -2,6 +2,7 @@ package com.lib.service;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.*;
 
@@ -15,12 +16,15 @@ import org.springframework.data.domain.PageRequest;
 import com.lib.model.Book;
 import com.lib.model.BookTransaction;
 import com.lib.model.User;
+import com.lib.model.Fine;
 import com.lib.model.BookRequest;
 import com.lib.model.RequestStatus;
 import com.lib.repository.BookRepository;
 import com.lib.repository.UserRepository;
 import com.lib.repository.BookRequestRepository;
 import com.lib.repository.BookTransactionRepository;
+import com.lib.repository.FineRepository;
+
 
 @Service
 public class BookService {
@@ -52,6 +56,8 @@ public class BookService {
     @Autowired
     private ReceiptService receiptService;
     
+    @Autowired
+    private FineRepository fineRepository;
     
     public Book findById(Integer bookId) {
         return bookRepository.findById(bookId)
@@ -165,8 +171,7 @@ public class BookService {
                 // Send fine receipt
                 User user = tx.getUser();
                 byte[] pdf = receiptService.generateFinePDF(user, fine);
-                emailService.sendReceiptWithPDF(user.getEmail(), "Late Return Fine Notice", 
-                    "You have a fine for late return of a book. Please see the attached receipt.", pdf);
+                emailService.sendFinePDF(user.getEmail(),pdf,"fine_receipt.pdf");
             }
         }
     
