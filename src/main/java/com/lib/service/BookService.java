@@ -156,7 +156,7 @@ public class BookService {
             bookTransactionRepository.save(tx);
     
             // Check for overdue
-            LocalDate dueDate = tx.getBorrowDate().plusDays(6);
+            LocalDate dueDate = tx.getBorrowDate().plusDays(4);
             if (tx.getReturnDate().isAfter(dueDate)) {
                 Fine fine = new Fine();
                 fine.setTransaction(tx);
@@ -164,7 +164,7 @@ public class BookService {
                 fine.setPaid(false);
                 fine.setReason("Late return for " + tx.getBook().getBookName());
                 fine.setIssuedDate(LocalDate.now());
-                fine.setDueDate(LocalDate.now().plusDays(5)); // give 7 days to pay
+                fine.setDueDate(LocalDate.now().plusDays(7)); // give 7 days to pay
     
                 fineRepository.save(fine);
     
