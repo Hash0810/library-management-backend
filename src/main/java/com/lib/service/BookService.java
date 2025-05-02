@@ -164,7 +164,7 @@ public class BookService {
                 fine.setPaid(false);
                 fine.setReason("Late return for " + tx.getBook().getBookName());
                 fine.setIssuedDate(LocalDate.now());
-                fine.setDueDate(LocalDate.now().plusDays(7)); // give 7 days to pay
+                fine.setDueDate(LocalDate.now().plusDays(5)); // give 7 days to pay
     
                 fineRepository.save(fine);
     
