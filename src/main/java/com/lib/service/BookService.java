@@ -156,7 +156,7 @@ public class BookService {
             bookTransactionRepository.save(tx);
     
             // Check for overdue
-            LocalDate dueDate = tx.getBorrowDate().plusDays(4);
+            LocalDate dueDate = tx.getBorrowDate().plusDays(3);
             if (tx.getReturnDate().isAfter(dueDate)) {
                 Fine fine = new Fine();
                 fine.setTransaction(tx);
