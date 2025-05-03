@@ -40,7 +40,7 @@ public class FineScheduler {
         List<BookTransaction> activeTransactions = bookTransactionRepository.findByReturnDateIsNull();
 
         for (BookTransaction tx : activeTransactions) {
-            LocalDate dueDate = tx.getBorrowDate().plusDays(14);
+            LocalDate dueDate = tx.getBorrowDate().plusDays(3);
             if (LocalDate.now().isAfter(dueDate)) {
                 // Check if fine already exists for this transaction
                 boolean fineExists = fineService.existsByTransactionId(tx.getId());
