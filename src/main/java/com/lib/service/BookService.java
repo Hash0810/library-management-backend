@@ -162,10 +162,11 @@ public class BookService {
                 fine.setTransaction(tx);
                 fine.setAmount(ChronoUnit.DAYS.between(dueDate, tx.getReturnDate()) * 2.0); // ₹2 per day
                 fine.setPaid(false);
+                fine.setUser(tx.getUser());
                 fine.setReason("Late return for " + tx.getBook().getBookName());
                 fine.setIssuedDate(LocalDate.now());
-                fine.setDueDate(LocalDate.now().plusDays(7)); // give 7 days to pay
-    
+                fine.setDueDate(LocalDate.now().plusDays(7));
+                
                 fineRepository.save(fine);
     
                 // Send fine receipt
