@@ -53,6 +53,7 @@ public class FineService {
     public List<FineHistory> getFinesByUsername(String username) {
         return fineRepository.findByUser_Username(username)
             .stream()
+            .filter(fine -> fine.getTransaction() != null && fine.getTransaction().getBook() != null)
             .map(fine -> new FineHistory(
                 fine.getTransaction().getBook().getBookName(),
                 fine.getAmount(),
